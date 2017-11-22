@@ -1,2 +1,2 @@
 #!/bin/bash
-g++ *.cpp -o main
+g++ *.cpp -o chat
