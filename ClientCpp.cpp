@@ -1,34 +1,53 @@
 #include <iostream>
 #include <errno.h>
 #include <thread>
-#include <string>
+#include <string.h>
 #include <cstdlib>
 #include "MySocket.h"
+
 
 using namespace std;
 
 class Client{
 	public:	
 		Client(string ip, int port);
-		MySocket ms;
-}
+		static void writeToSocket(MySocket ms);
+		static void readFromSocket(MySocket ms);
+};
 
 Client::Client(string ip, int port){
-	ms(ip, port);
+	MySocket ms(ip, port);
+	thread writeThread(&Client::writeToSocket, ms); 
+	thread readThread(&Client::readFromSocket, ms);
+	writeThread.join();
+	readThread.join();
 }
 
-int main(int argc, string argv[]){
+void Client::writeToSocket(MySocket ms){
+	string ky;
+	while(!std::getline(cin, ky)){
+		ms.printLine(ky);
+	}
+}
 
-	if(argc == 0 || argc > 2 || argc < 2){
-		cout << "Usage:" << endl << "Client: g++ ClientCpp ipAddress Port" << endl;
+void Client::readFromSocket(MySocket ms){
+	string received;
+	while(true){
+		ms.readLine(received);
+		cout << received;
+	}
+}
+
+int main(int argc, char* argv[]){
+	if(argc != 3){
+		cout << "Usage:" << endl << "Client: ./chat ipAddress Port" << endl;
 	}else{
 		cout << "Client" << endl;
-		int port = (int)argv[1];
-		string ip = argv[0];
-		cout << "Trying to connect at IP " << argv[0] << " at port " << argv[1] << endl;
+		int port = atoi(argv[2]);
+		string ip(argv[1]);
+		cout << "Trying to connect at IP " << argv[1] << " at port " << argv[2] << endl;
 		Client c(ip, port);
 
 	}
-
-
+	return 0;
 }
