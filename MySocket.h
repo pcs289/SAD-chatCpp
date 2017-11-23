@@ -21,16 +21,20 @@ class MySocket{
 
 	public:
 		MySocket(string ip, int port){
+			cout << "socketmadafaka"<<endl;
 			serverSocket.sin_addr.s_addr = inet_addr(ip.c_str()); 
-			serverSocket.sin_port = htons(port);
+			serverSocket.sin_port = port;
 			serverSocket.sin_family = AF_INET;
-
-			if ((socketFD = socket(AF_INET , SOCK_STREAM , 0)) < 0) 
+			cout <<"yeye"<<endl;
+			if ((socketFD = socket(AF_INET , SOCK_STREAM , 0)) < 0){
+				cout << "fail1"<<endl;
 				exit(EXIT_FAILURE);
+			}
 
-			if(connect(socketFD, (struct sockaddr *)&serverSocket, sizeof(serverSocket)) < 0)
+			if(connect(socketFD, (struct sockaddr*)&serverSocket, sizeof(serverSocket)) < 0){
+				cout <<"fail2"<<endl;
 				exit(EXIT_FAILURE);
-			
+			}			
 		}
 
 		int getSocketFileDescriptor(){

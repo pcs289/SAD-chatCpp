@@ -16,9 +16,13 @@ class Client{
 };
 
 Client::Client(string ip, int port){
+	cout << "Client" << endl;
 	MySocket ms(ip, port);
+	cout<<"socket ready"<<endl;
 	thread writeThread(&Client::writeToSocket, ms); 
+	cout << "writeThread"<<endl;
 	thread readThread(&Client::readFromSocket, ms);
+	cout << "readThread"<<endl;
 	writeThread.join();
 	readThread.join();
 }
@@ -43,7 +47,7 @@ int main(int argc, char* argv[]){
 		cout << "Usage:" << endl << "Client: ./chat ipAddress Port" << endl;
 	}else{
 		cout << "Client" << endl;
-		int port = atoi(argv[2]);
+		int port = htons(atoi(argv[2]));
 		string ip(argv[1]);
 		cout << "Trying to connect at IP " << argv[1] << " at port " << argv[2] << endl;
 		Client c(ip, port);
