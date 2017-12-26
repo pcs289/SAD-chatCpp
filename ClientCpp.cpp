@@ -16,29 +16,38 @@ class Client{
 };
 
 Client::Client(string ip, int port){
-	cout << "Client" << endl;
-	MySocket ms(ip, port);
-	cout<<"socket ready"<<endl;
-	thread writeThread(&Client::writeToSocket, ms); 
-	cout << "writeThread"<<endl;
-	thread readThread(&Client::readFromSocket, ms);
-	cout << "readThread"<<endl;
-	writeThread.join();
-	readThread.join();
+	try{
+		MySocket ms(ip, port);
+		thread writeThread(&Client::writeToSocket, ms); 
+		thread readThread(&Client::readFromSocket, ms);
+		writeThread.join();
+		readThread.join();
+	}catch (int e){
+		cout << strerror(e) << endl;
+	}
 }
 
 void Client::writeToSocket(MySocket ms){
 	string ky;
-	while(!std::getline(cin, ky)){
-		ms.printLine(ky);
+	try{
+		while(!std::getline(cin, ky)){
+			ms.printLine(ky);
+		}
+	}catch (int e){
+		cout << strerror(e) << endl;
 	}
 }
 
 void Client::readFromSocket(MySocket ms){
 	string received;
-	while(true){
-		ms.readLine(received);
-		cout << received;
+	try{
+		while(true){
+
+			ms.readLine(received);
+			cout << received;
+		}
+	}catch (int e){
+		cout << strerror(e) << endl;
 	}
 }
 
@@ -49,7 +58,7 @@ int main(int argc, char* argv[]){
 		cout << "Client" << endl;
 		int port = htons(atoi(argv[2]));
 		string ip(argv[1]);
-		cout << "Trying to connect at IP " << argv[1] << " at port " << argv[2] << endl;
+		cout << "Trying to connect at IP " << argv[1] << " at port " << argv[2] << "..." << endl;
 		Client c(ip, port);
 
 	}

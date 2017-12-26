@@ -1,2 +1,2 @@
 #!/bin/bash
-g++ *.cpp -o chat -std=gnu++11 -lpthread
+g++ Client.cpp -o client -std=gnu++11 -lpthread

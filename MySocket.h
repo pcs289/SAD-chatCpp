@@ -20,20 +20,18 @@ class MySocket{
 		int socketFD;
 
 	public:
-		MySocket(string ip, int port){
-			cout << "socketmadafaka"<<endl;
+		MySocket(string ip, int port) throw (int){
 			serverSocket.sin_addr.s_addr = inet_addr(ip.c_str()); 
 			serverSocket.sin_port = port;
 			serverSocket.sin_family = AF_INET;
-			cout <<"yeye"<<endl;
 			if ((socketFD = socket(AF_INET , SOCK_STREAM , 0)) < 0){
-				cout << "fail1"<<endl;
-				exit(EXIT_FAILURE);
+				throw errno;
+				//exit(EXIT_FAILURE);
 			}
 
 			if(connect(socketFD, (struct sockaddr*)&serverSocket, sizeof(serverSocket)) < 0){
-				cout <<"fail2"<<endl;
-				exit(EXIT_FAILURE);
+				throw errno;
+				//exit(EXIT_FAILURE);
 			}			
 		}
 
@@ -45,16 +43,15 @@ class MySocket{
 			int n = shutdown(socketFD,0);
 		}
 
-		void printLine(string line){
+		void printLine(string line) throw (int){
 			if (send(MySocket::socketFD, line.c_str(), strlen(line.c_str()), 0) < 0)
-				exit(EXIT_FAILURE);
+				throw errno;
 		}
 
-		void readLine(string buffer){
-
+		void readLine(string buffer) throw (int){
 			int n = recv(this->socketFD, &buffer[0], MAX_SIZE, 0);
 			if(n < 0)
-				exit(EXIT_FAILURE);
+				throw errno;
 		}
 
 
